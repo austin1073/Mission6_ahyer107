@@ -14,19 +14,16 @@ namespace Mission6_ahyer107.Models
         [Required]
         public int MovieId { get; set; }
 
-        [Required]
-        public string Category { get; set; }
-
-        [Required]
+        [Required(ErrorMessage = "Title is required.")]
         public string Title { get; set; }
 
-        [Required]
+        [Required(ErrorMessage ="Year is required.")]
         public int Year { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Director is required.")]
         public string Director { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Rating is required.")]
         public string Rating { get; set; }
 
         public bool Edited { get; set; }
@@ -36,5 +33,10 @@ namespace Mission6_ahyer107.Models
         //Sets the max string length to 25 characters for the notes
         [StringLength(25)]
         public string Notes { get; set; }
+
+        //Building the foreign key relationship
+        [Required(ErrorMessage = "Category is required.")]
+        public int CategoryId { get; set; }
+        public Category Category { get; set; }
     }
 }

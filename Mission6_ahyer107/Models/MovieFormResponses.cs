@@ -15,15 +15,29 @@ namespace Mission6_ahyer107.Models
         }
 
         public DbSet<MovieFormResponse> Responses { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
+        //This creates all the categories and links them to a category ID
         protected override void OnModelCreating(ModelBuilder mb)
         {
+            mb.Entity<Category>().HasData(
+                    new Category { CategoryId = 1, CategoryName = "Action/Adventure"},
+                    new Category { CategoryId = 2, CategoryName = "Comedy"},
+                    new Category { CategoryId = 3, CategoryName = "Drama" },
+                    new Category { CategoryId = 4, CategoryName = "Family" },
+                    new Category { CategoryId = 5, CategoryName = "Horror/Suspense" },
+                    new Category { CategoryId = 6, CategoryName = "Miscellaneous" },
+                    new Category { CategoryId = 7, CategoryName = "Television" },
+                    new Category { CategoryId = 8, CategoryName = "VHS" }
+                );
+
+
             mb.Entity<MovieFormResponse>().HasData(
 
                 new MovieFormResponse
                 {
                     MovieId = 1,
-                    Category = "Action",
+                    CategoryId = 1,
                     Title = "Jurrasic Park",
                     Year = 1993,
                     Director = "Steven Spielberg",
@@ -35,7 +49,7 @@ namespace Mission6_ahyer107.Models
                 new MovieFormResponse
                 {
                     MovieId = 2,
-                    Category = "Action",
+                    CategoryId = 1,
                     Title = "Avengers, The",
                     Year = 2012,
                     Director = "Joss Whedon",
@@ -47,7 +61,7 @@ namespace Mission6_ahyer107.Models
                 new MovieFormResponse
                 {
                     MovieId = 3,
-                    Category = "Comedy",
+                    CategoryId = 2,
                     Title = "Hitch",
                     Year = 2005,
                     Director = "Andy Tennant",

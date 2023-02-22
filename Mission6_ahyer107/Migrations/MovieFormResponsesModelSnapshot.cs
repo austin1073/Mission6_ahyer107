@@ -15,15 +15,70 @@ namespace Mission6_ahyer107.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.32");
 
+            modelBuilder.Entity("Mission6_ahyer107.Models.Category", b =>
+                {
+                    b.Property<int>("CategoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CategoryName")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("CategoryId");
+
+                    b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            CategoryId = 1,
+                            CategoryName = "Action/Adventure"
+                        },
+                        new
+                        {
+                            CategoryId = 2,
+                            CategoryName = "Comedy"
+                        },
+                        new
+                        {
+                            CategoryId = 3,
+                            CategoryName = "Drama"
+                        },
+                        new
+                        {
+                            CategoryId = 4,
+                            CategoryName = "Family"
+                        },
+                        new
+                        {
+                            CategoryId = 5,
+                            CategoryName = "Horror/Suspense"
+                        },
+                        new
+                        {
+                            CategoryId = 6,
+                            CategoryName = "Miscellaneous"
+                        },
+                        new
+                        {
+                            CategoryId = 7,
+                            CategoryName = "Television"
+                        },
+                        new
+                        {
+                            CategoryId = 8,
+                            CategoryName = "VHS"
+                        });
+                });
+
             modelBuilder.Entity("Mission6_ahyer107.Models.MovieFormResponse", b =>
                 {
                     b.Property<int>("MovieId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Director")
                         .IsRequired()
@@ -52,13 +107,15 @@ namespace Mission6_ahyer107.Migrations
 
                     b.HasKey("MovieId");
 
+                    b.HasIndex("CategoryId");
+
                     b.ToTable("Responses");
 
                     b.HasData(
                         new
                         {
                             MovieId = 1,
-                            Category = "Action",
+                            CategoryId = 1,
                             Director = "Steven Spielberg",
                             Edited = false,
                             Lent_To = "Parker",
@@ -70,7 +127,7 @@ namespace Mission6_ahyer107.Migrations
                         new
                         {
                             MovieId = 2,
-                            Category = "Action",
+                            CategoryId = 1,
                             Director = "Joss Whedon",
                             Edited = false,
                             Lent_To = "Chester",
@@ -82,7 +139,7 @@ namespace Mission6_ahyer107.Migrations
                         new
                         {
                             MovieId = 3,
-                            Category = "Comedy",
+                            CategoryId = 2,
                             Director = "Andy Tennant",
                             Edited = false,
                             Lent_To = "Andrew",
@@ -91,6 +148,15 @@ namespace Mission6_ahyer107.Migrations
                             Title = "Hitch",
                             Year = 2005
                         });
+                });
+
+            modelBuilder.Entity("Mission6_ahyer107.Models.MovieFormResponse", b =>
+                {
+                    b.HasOne("Mission6_ahyer107.Models.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

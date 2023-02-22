@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Mission6_ahyer107.Models;
 using System;
@@ -11,15 +12,13 @@ namespace Mission6_ahyer107.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
 
         //Connecting the model to the database
-        private MovieFormResponses blahContext { get; set; }
+        private MovieFormResponses daContext { get; set; }
 
-        public HomeController(ILogger<HomeController> logger, MovieFormResponses someName)
+        public HomeController(MovieFormResponses someName)
         {
-            _logger = logger;
-            blahContext = someName;
+            daContext = someName;
         }
 
         //Homepage view
@@ -34,6 +33,7 @@ namespace Mission6_ahyer107.Controllers
             return View();
         }
 
+        //Successful addition view
         public IActionResult Success()
         {
             return View();
@@ -43,6 +43,8 @@ namespace Mission6_ahyer107.Controllers
         [HttpGet]
         public IActionResult MovieForm()
         {
+            ViewBag.Categories = daContext.Categories.ToList();
+
             return View();
         }
 
@@ -52,26 +54,67 @@ namespace Mission6_ahyer107.Controllers
         {
             if (ModelState.IsValid)
             {
-                blahContext.Add(ar);
-                blahContext.SaveChanges();
+                daContext.Add(ar);
+                daContext.SaveChanges();
                 return View("Success", ar);
             }
             else
             {
+                ViewBag.Categories = daContext.Categories.ToList();
                 return View();
             }
 
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
+        //Shows the list of movies
+        public IActionResult MovieList ()
+        { 
+
+            var movies = daContext.Responses
+                .Include(x => x.Category)
+                .OrderBy(x => x.Title)
+                .ToList();
+
+            return View(movies);
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        //Shows the get for the edit action
+        [HttpGet]
+        public IActionResult Edit(int movieid)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            ViewBag.Categories = daContext.Categories.ToList();
+
+            var submission = daContext.Responses.Single(x => x.MovieId == movieid);
+
+            return View("MovieForm", submission);
         }
+
+        //Action for updating a record
+        [HttpPost]
+        public IActionResult Edit(MovieFormResponse mfr)
+        {
+            daContext.Update(mfr);
+            daContext.SaveChanges();
+
+            return RedirectToAction("MovieList");
+        }
+
+        //Pulls up the delete page
+        [HttpGet]
+        public IActionResult Delete(int movieid)
+        {
+            var submission = daContext.Responses.Single(x => x.MovieId == movieid);
+            return View(submission);
+        }
+        //Deletes the record after the user confirms
+        [HttpPost]
+        public IActionResult Delete(MovieFormResponse mfr)
+        {
+            daContext.Responses.Remove(mfr);
+            daContext.SaveChanges();
+            
+            return RedirectToAction("MovieList");
+        }
+
     }
 }
